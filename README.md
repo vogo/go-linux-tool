@@ -1,7 +1,4 @@
-goprocinfo
-===================
-
-/proc information parser for Go.
+# go linux tool
 
 Usage
 ---------------
@@ -10,10 +7,10 @@ Usage
 import (
 	"log"
 
-	linuxproc "github.com/c9s/goprocinfo/linux"
+	linuxtool "github.com/vogo/go-linux-tool"
 )
 
-stat, err := linuxproc.ReadStat("/proc/stat")
+stat, err := linuxtool.ReadStat("/proc/stat")
 if err != nil {
 	log.Fatal("stat read fail")
 }
@@ -36,7 +33,7 @@ for _, s := range stat.CPUStats {
 Documentation
 ---------------
 
-Full documentation is available at [Godoc](https://godoc.org/github.com/c9s/goprocinfo/linux).
+Full documentation is available at [Godoc](https://godoc.org/github.com/vogo/go-linux-tool).
 
 
 Reference
@@ -47,4 +44,4 @@ Reference
 License
 -------
 
-goprocinfo is distributed under the MIT license.
+go-linux-tool is distributed under the MIT license.
