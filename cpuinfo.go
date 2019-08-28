@@ -7,50 +7,7 @@ import (
 	"strings"
 )
 
-type CPUInfo struct {
-	Processors []Processor `json:"processors"`
-}
-
-func (self *CPUInfo) NumCPU() int {
-	return len(self.Processors)
-}
-
-func (self *CPUInfo) NumCore() int {
-	core := make(map[string]bool)
-
-	for _, p := range self.Processors {
-		pid := p.PhysicalId
-		cid := p.CoreId
-
-		if pid == -1 {
-			return self.NumCPU()
-		} else {
-			// to avoid fmt import
-			key := strconv.FormatInt(int64(pid), 10) + ":" + strconv.FormatInt(int64(cid), 10)
-			core[key] = true
-		}
-	}
-
-	return len(core)
-}
-
-func (self *CPUInfo) NumPhysicalCPU() int {
-	pcpu := make(map[string]bool)
-
-	for _, p := range self.Processors {
-		pid := p.PhysicalId
-
-		if pid == -1 {
-			return self.NumCPU()
-		} else {
-			// to avoid fmt import
-			key := strconv.FormatInt(int64(pid), 10)
-			pcpu[key] = true
-		}
-	}
-
-	return len(pcpu)
-}
+var cpuInfoRegExp = regexp.MustCompile(`([^:]*?)\s*:\s*(.*)$`)
 
 type Processor struct {
 	Id         int64    `json:"id"`
@@ -65,7 +22,50 @@ type Processor struct {
 	CoreId     int64    `json:"core_id"`
 }
 
-var cpuinfoRegExp = regexp.MustCompile(`([^:]*?)\s*:\s*(.*)$`)
+type CPUInfo struct {
+	Processors []Processor `json:"processors"`
+}
+
+func (info *CPUInfo) NumCPU() int {
+	return len(info.Processors)
+}
+
+func (info *CPUInfo) NumCore() int {
+	core := make(map[string]bool)
+
+	for _, p := range info.Processors {
+		pid := p.PhysicalId
+		cid := p.CoreId
+
+		if pid == -1 {
+			return info.NumCPU()
+		} else {
+			// to avoid fmt import
+			key := strconv.FormatInt(int64(pid), 10) + ":" + strconv.FormatInt(int64(cid), 10)
+			core[key] = true
+		}
+	}
+
+	return len(core)
+}
+
+func (info *CPUInfo) NumPhysicalCPU() int {
+	pcpu := make(map[string]bool)
+
+	for _, p := range info.Processors {
+		pid := p.PhysicalId
+
+		if pid == -1 {
+			return info.NumCPU()
+		} else {
+			// to avoid fmt import
+			key := strconv.FormatInt(int64(pid), 10)
+			pcpu[key] = true
+		}
+	}
+
+	return len(pcpu)
+}
 
 func ReadCPUInfo(path string) (*CPUInfo, error) {
 	b, err := ioutil.ReadFile(path)
@@ -76,7 +76,7 @@ func ReadCPUInfo(path string) (*CPUInfo, error) {
 	content := string(b)
 	lines := strings.Split(content, "\n")
 
-	var cpuinfo = CPUInfo{}
+	var cpuInfo = CPUInfo{}
 	var processor = &Processor{CoreId: -1, PhysicalId: -1}
 
 	for i, line := range lines {
@@ -85,41 +85,41 @@ func ReadCPUInfo(path string) (*CPUInfo, error) {
 
 		if len(line) == 0 && i != len(lines)-1 {
 			// end of processor
-			cpuinfo.Processors = append(cpuinfo.Processors, *processor)
+			cpuInfo.Processors = append(cpuInfo.Processors, *processor)
 			processor = &Processor{}
 			continue
 		} else if i == len(lines)-1 {
 			continue
 		}
 
-		submatches := cpuinfoRegExp.FindStringSubmatch(line)
-		key = submatches[1]
-		value = submatches[2]
+		subMatches := cpuInfoRegExp.FindStringSubmatch(line)
+		key = subMatches[1]
+		value = subMatches[2]
 
 		switch key {
 		case "processor":
-			processor.Id, _ = strconv.ParseInt(value, 10, 64)
+			processor.Id = ParseInt64(value)
 		case "vendor_id":
 			processor.VendorId = value
 		case "model":
-			processor.Model, _ = strconv.ParseInt(value, 10, 64)
+			processor.Model = ParseInt64(value)
 		case "model name":
 			processor.ModelName = value
 		case "flags":
 			processor.Flags = strings.Fields(value)
 		case "cpu cores":
-			processor.Cores, _ = strconv.ParseInt(value, 10, 64)
+			processor.Cores = ParseInt64(value)
 		case "cpu MHz":
-			processor.MHz, _ = strconv.ParseFloat(value, 64)
+			processor.MHz = ParseFloat64(value)
 		case "cache size":
 			processor.CacheSize, _ = strconv.ParseInt(value[:strings.IndexAny(value, " \t\n")], 10, 64)
 			if strings.HasSuffix(line, "MB") {
 				processor.CacheSize *= 1024
 			}
 		case "physical id":
-			processor.PhysicalId, _ = strconv.ParseInt(value, 10, 64)
+			processor.PhysicalId = ParseInt64(value)
 		case "core id":
-			processor.CoreId, _ = strconv.ParseInt(value, 10, 64)
+			processor.CoreId = ParseInt64(value)
 		}
 		/*
 			processor	: 0
@@ -129,5 +129,5 @@ func ReadCPUInfo(path string) (*CPUInfo, error) {
 			model name	: Intel(R) Xeon(R) CPU           L5520  @ 2.27GHz
 		*/
 	}
-	return &cpuinfo, nil
+	return &cpuInfo, nil
 }

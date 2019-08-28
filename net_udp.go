@@ -2,7 +2,6 @@ package linuxtool
 
 import (
 	"io/ioutil"
-	"strconv"
 	"strings"
 )
 
@@ -48,7 +47,7 @@ func ReadNetUDPSockets(path string, ip NetIPDecoder) (*NetUDPSockets, error) {
 			Drops:     0,
 		}
 
-		if e.Drops, err = strconv.ParseUint(f[12], 10, 64); err != nil {
+		if e.Drops, err = ParseUint(f[12]); err != nil {
 			return nil, err
 		}
 

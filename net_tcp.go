@@ -53,11 +53,11 @@ func ReadNetTCPSockets(path string, ip NetIPDecoder) (*NetTCPSockets, error) {
 			NetSocket: *s,
 		}
 
-		if e.RetransmitTimeout, err = strconv.ParseUint(f[12], 10, 64); err != nil {
+		if e.RetransmitTimeout, err = ParseUint(f[12]); err != nil {
 			return nil, err
 		}
 
-		if e.PredictedTick, err = strconv.ParseUint(f[13], 10, 64); err != nil {
+		if e.PredictedTick, err = ParseUint(f[13]); err != nil {
 			return nil, err
 		}
 
@@ -65,13 +65,13 @@ func ReadNetTCPSockets(path string, ip NetIPDecoder) (*NetTCPSockets, error) {
 			return nil, err
 		}
 		e.AckQuick = uint8(n >> 1)
-		e.AckPingpong = ((n & 1) == 1)
+		e.AckPingpong = (n & 1) == 1
 
-		if e.SendingCongestionWindow, err = strconv.ParseUint(f[15], 10, 64); err != nil {
+		if e.SendingCongestionWindow, err = ParseUint(f[15]); err != nil {
 			return nil, err
 		}
 
-		if e.SlowStartSizeThreshold, err = strconv.ParseInt(f[16], 10, 32); err != nil {
+		if e.SlowStartSizeThreshold, err = ParseInt32(f[16]); err != nil {
 			return nil, err
 		}
 

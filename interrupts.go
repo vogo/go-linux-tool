@@ -2,7 +2,6 @@ package linuxtool
 
 import (
 	"io/ioutil"
-	"strconv"
 	"strings"
 )
 
@@ -38,7 +37,7 @@ func ReadInterrupts(path string) (*Interrupts, error) {
 			if len(fields) <= i+1 {
 				break
 			}
-			count, err := strconv.ParseInt(fields[i+1], 10, 64)
+			count, err := ParseInt(fields[i+1])
 			if err != nil {
 				return nil, err
 			}

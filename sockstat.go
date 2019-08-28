@@ -3,7 +3,6 @@ package linuxtool
 import (
 	"io/ioutil"
 	"reflect"
-	"strconv"
 	"strings"
 )
 
@@ -79,8 +78,7 @@ func ReadSockStat(path string) (*SockStat, error) {
 				key = v
 				continue
 			}
-			val, _ := strconv.ParseUint(v, 10, 64)
-			statMap[statType+key] = val
+			statMap[statType+key] = ParseUint64(v)
 		}
 	}
 

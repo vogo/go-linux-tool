@@ -1,9 +1,25 @@
 package linuxtool
 
+// # cat /proc/loadavg
+//    0.75 0.35 0.25 1/25 1747
+//
+// The first three fields in this file are load average figures giving the number
+// of jobs in the run queue (state R) or waiting for disk I/O (state D)
+// averaged over 1, 5, and 15 minutes.
+// They are the same as the load average numbers given by uptime(1) and other programs.
+//
+// The fourth field consists of two numbers separated by a slash (/).
+// The first of these is the number of currently executing kernel scheduling entities (processes, threads);
+// this will be less than or equal to the number of CPUs.
+// The value after the slash is the number of kernel scheduling entities that currently exist on the system.
+//
+// The fifth field is the PID of the process that was most recently created on the system.
+//
+// ref: https://linux.die.net/man/5/proc
+
 import (
 	"errors"
 	"io/ioutil"
-	"strconv"
 	"strings"
 )
 
@@ -39,27 +55,27 @@ func ReadLoadAvg(path string) (*LoadAvg, error) {
 
 	loadavg := LoadAvg{}
 
-	if loadavg.Last1Min, err = strconv.ParseFloat(fields[0], 64); err != nil {
+	if loadavg.Last1Min, err = ParseFloat(fields[0]); err != nil {
 		return nil, err
 	}
 
-	if loadavg.Last5Min, err = strconv.ParseFloat(fields[1], 64); err != nil {
+	if loadavg.Last5Min, err = ParseFloat(fields[1]); err != nil {
 		return nil, err
 	}
 
-	if loadavg.Last15Min, err = strconv.ParseFloat(fields[2], 64); err != nil {
+	if loadavg.Last15Min, err = ParseFloat(fields[2]); err != nil {
 		return nil, err
 	}
 
-	if loadavg.ProcessRunning, err = strconv.ParseUint(process[0], 10, 64); err != nil {
+	if loadavg.ProcessRunning, err = ParseUint(process[0]); err != nil {
 		return nil, err
 	}
 
-	if loadavg.ProcessTotal, err = strconv.ParseUint(process[1], 10, 64); err != nil {
+	if loadavg.ProcessTotal, err = ParseUint(process[1]); err != nil {
 		return nil, err
 	}
 
-	if loadavg.LastPID, err = strconv.ParseUint(fields[4], 10, 64); err != nil {
+	if loadavg.LastPID, err = ParseUint(fields[4]); err != nil {
 		return nil, err
 	}
 

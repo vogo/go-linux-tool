@@ -2,7 +2,6 @@ package linuxtool
 
 import (
 	"io/ioutil"
-	"strconv"
 	"strings"
 )
 
@@ -137,7 +136,7 @@ func ReadVMStat(path string) (*VMStat, error) {
 			continue
 		}
 		name := fields[0]
-		value, _ := strconv.ParseUint(fields[1], 10, 64)
+		value := ParseUint64(fields[1])
 		switch name {
 		case "nr_free_pages":
 			vmstat.NrFreePages = value

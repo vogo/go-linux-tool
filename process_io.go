@@ -3,7 +3,6 @@ package linuxtool
 import (
 	"io/ioutil"
 	"reflect"
-	"strconv"
 	"strings"
 )
 
@@ -42,7 +41,7 @@ func ReadProcessIO(path string) (*ProcessIO, error) {
 		l := strings.Split(line, ": ")
 
 		k := l[0]
-		v, err := strconv.ParseUint(l[1], 10, 64)
+		v, err := ParseUint(l[1])
 
 		if err != nil {
 			return nil, err

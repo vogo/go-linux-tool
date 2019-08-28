@@ -2,7 +2,6 @@ package linuxtool
 
 import (
 	"io/ioutil"
-	"strconv"
 	"strings"
 )
 
@@ -34,7 +33,7 @@ func ReadProcessStatm(path string) (*ProcessStatm, error) {
 
 	for i := 0; i < len(f); i++ {
 
-		if n, err = strconv.ParseUint(f[i], 10, 64); err != nil {
+		if n, err = ParseUint(f[i]); err != nil {
 			return nil, err
 		}
 

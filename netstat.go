@@ -3,7 +3,6 @@ package linuxtool
 import (
 	"io/ioutil"
 	"reflect"
-	"strconv"
 	"strings"
 )
 
@@ -165,7 +164,7 @@ func ReadNetStat(path string) (*NetStat, error) {
 
 	for i := 0; i < elem.NumField(); i++ {
 		if val, ok := statMap[typeOfElem.Field(i).Name]; ok {
-			parsedVal, _ := strconv.ParseUint(val, 10, 64)
+			parsedVal, _ := ParseUint(val)
 			elem.Field(i).SetUint(parsedVal)
 		}
 	}

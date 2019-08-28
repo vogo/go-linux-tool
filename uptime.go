@@ -2,7 +2,6 @@ package linuxtool
 
 import (
 	"io/ioutil"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -12,15 +11,15 @@ type Uptime struct {
 	Idle  float64 `json:"idle"`
 }
 
-func (self *Uptime) GetTotalDuration() time.Duration {
-	return time.Duration(self.Total) * time.Second
+func (uptime *Uptime) GetTotalDuration() time.Duration {
+	return time.Duration(uptime.Total) * time.Second
 }
 
-func (self *Uptime) GetIdleDuration() time.Duration {
-	return time.Duration(self.Idle) * time.Second
+func (uptime *Uptime) GetIdleDuration() time.Duration {
+	return time.Duration(uptime.Idle) * time.Second
 }
 
-func (self *Uptime) CalculateIdle() float64 {
+func (uptime *Uptime) CalculateIdle() float64 {
 	// XXX
 	// num2/(num1*N)     # N = SMP CPU numbers
 	return 0
@@ -33,10 +32,10 @@ func ReadUptime(path string) (*Uptime, error) {
 	}
 	fields := strings.Fields(string(b))
 	uptime := Uptime{}
-	if uptime.Total, err = strconv.ParseFloat(fields[0], 64); err != nil {
+	if uptime.Total, err = ParseFloat(fields[0]); err != nil {
 		return nil, err
 	}
-	if uptime.Idle, err = strconv.ParseFloat(fields[1], 64); err != nil {
+	if uptime.Idle, err = ParseFloat(fields[1]); err != nil {
 		return nil, err
 	}
 	return &uptime, nil

@@ -1,9 +1,23 @@
 package linuxtool
 
+// /proc/meminfo
+//
+// This file reports statistics about memory usage on the system.
+//
+// It is used by free(1) to report the amount of free and used memory (both physical and swap)
+// on the system as well as the shared memory and buffers used by the kernel.
+// Each line of the file consists of a parameter name, followed by a colon,
+// the value of the parameter, and an option unit of measurement (e.g., "kB").
+// The list below describes the parameter names and the format specifier required to read the field value.
+// Except as noted below, all of the fields have been present since at least Linux 2.6.0.
+// Some fields are only displayed if the kernel was configured with various options;
+// those dependencies are noted in the list.
+//
+// ref: https://linux.die.net/man/5/proc
+
 import (
 	"io/ioutil"
 	"reflect"
-	"strconv"
 	"strings"
 )
 
@@ -74,8 +88,7 @@ func ReadMemInfo(path string) (*MemInfo, error) {
 			continue
 		}
 		valFields := strings.Fields(fields[1])
-		val, _ := strconv.ParseUint(valFields[0], 10, 64)
-		statMap[fields[0]] = val
+		statMap[fields[0]] = ParseUint64(valFields[0])
 	}
 
 	elem := reflect.ValueOf(&info).Elem()

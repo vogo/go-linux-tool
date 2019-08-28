@@ -56,23 +56,23 @@ func parseNetSocket(f []string, ip NetIPDecoder) (*NetSocket, error) {
 		return nil, err
 	}
 
-	if socket.TxQueue, err = strconv.ParseUint(q[0], 16, 64); err != nil {
+	if socket.TxQueue, err = ParseHexUint(q[0]); err != nil {
 		return nil, err
 	}
 
-	if socket.RxQueue, err = strconv.ParseUint(q[1], 16, 64); err != nil {
+	if socket.RxQueue, err = ParseHexUint(q[1]); err != nil {
 		return nil, err
 	}
 
-	if u, err = strconv.ParseUint(f[7], 10, 32); err != nil {
+	if u, err = ParseUint32(f[7]); err != nil {
 		return nil, err
 	}
 
-	if socket.Inode, err = strconv.ParseUint(f[9], 10, 64); err != nil {
+	if socket.Inode, err = ParseUint(f[9]); err != nil {
 		return nil, err
 	}
 
-	if socket.SocketReferenceCount, err = strconv.ParseUint(f[10], 10, 64); err != nil {
+	if socket.SocketReferenceCount, err = ParseUint(f[10]); err != nil {
 		return nil, err
 	}
 
@@ -114,7 +114,7 @@ func NetIPv4Decoder(s string) (string, error) {
 	}
 
 	h := net.IP(b).String()
-	n, _ := strconv.ParseUint(i[1], 16, 64)
+	n, _ := ParseHexUint(i[1])
 	p := strconv.FormatUint(n, 10)
 
 	// ipv4:port
@@ -156,14 +156,13 @@ func NetIPv6Decoder(s string) (string, error) {
 			g := 8 - (k * 2)
 			f := g - 2
 
-			n, _ := strconv.ParseUint(h[f:g], 16, 8)
-			b[z] = byte(n)
+			b[z] = ParseHexByte(h[f:g])
 
 		}
 	}
 
 	h := net.IP(b).String()
-	n, _ := strconv.ParseUint(i[1], 16, 64)
+	n := ParseHexUint64(i[1])
 	p := strconv.FormatUint(n, 10)
 
 	// ipv6:port

@@ -2,7 +2,6 @@ package linuxtool
 
 import (
 	"io/ioutil"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -37,7 +36,7 @@ func createCPUStat(fields []string) *CPUStat {
 	s.Id = fields[0]
 
 	for i := 1; i < len(fields); i++ {
-		v, _ := strconv.ParseUint(fields[i], 10, 64)
+		v, _ := ParseUint(fields[i])
 		switch i {
 		case 1:
 			s.User = v
@@ -88,18 +87,18 @@ func ReadStat(path string) (*Stat, error) {
 				}
 			}
 		} else if fields[0] == "intr" {
-			stat.Interrupts, _ = strconv.ParseUint(fields[1], 10, 64)
+			stat.Interrupts = ParseUint64(fields[1])
 		} else if fields[0] == "ctxt" {
-			stat.ContextSwitches, _ = strconv.ParseUint(fields[1], 10, 64)
+			stat.ContextSwitches = ParseUint64(fields[1])
 		} else if fields[0] == "btime" {
-			seconds, _ := strconv.ParseInt(fields[1], 10, 64)
+			seconds, _ := ParseInt(fields[1])
 			stat.BootTime = time.Unix(seconds, 0)
 		} else if fields[0] == "processes" {
-			stat.Processes, _ = strconv.ParseUint(fields[1], 10, 64)
+			stat.Processes = ParseUint64(fields[1])
 		} else if fields[0] == "procs_running" {
-			stat.ProcsRunning, _ = strconv.ParseUint(fields[1], 10, 64)
+			stat.ProcsRunning = ParseUint64(fields[1])
 		} else if fields[0] == "procs_blocked" {
-			stat.ProcsBlocked, _ = strconv.ParseUint(fields[1], 10, 64)
+			stat.ProcsBlocked = ParseUint64(fields[1])
 		}
 	}
 	return &stat, nil

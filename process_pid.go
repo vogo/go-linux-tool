@@ -18,7 +18,7 @@ func ReadMaxPID(path string) (uint64, error) {
 
 	s := strings.TrimSpace(string(b))
 
-	i, err := strconv.ParseUint(s, 10, 64)
+	i, err := ParseUint(s)
 
 	if err != nil {
 		return 0, err

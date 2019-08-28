@@ -2,7 +2,6 @@ package linuxtool
 
 import (
 	"io/ioutil"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -48,22 +47,20 @@ func ReadDiskStats(path string) ([]DiskStat, error) {
 
 	for i := range results {
 		fields := strings.Fields(devices[i])
-		Major, _ := strconv.ParseInt(fields[0], 10, strconv.IntSize)
-		results[i].Major = int(Major)
-		Minor, _ := strconv.ParseInt(fields[1], 10, strconv.IntSize)
-		results[i].Minor = int(Minor)
+		results[i].Major = ParseIntValue(fields[0])
+		results[i].Minor = ParseIntValue(fields[1])
 		results[i].Name = fields[2]
-		results[i].ReadIOs, _ = strconv.ParseUint(fields[3], 10, 64)
-		results[i].ReadMerges, _ = strconv.ParseUint(fields[4], 10, 64)
-		results[i].ReadSectors, _ = strconv.ParseUint(fields[5], 10, 64)
-		results[i].ReadTicks, _ = strconv.ParseUint(fields[6], 10, 64)
-		results[i].WriteIOs, _ = strconv.ParseUint(fields[7], 10, 64)
-		results[i].WriteMerges, _ = strconv.ParseUint(fields[8], 10, 64)
-		results[i].WriteSectors, _ = strconv.ParseUint(fields[9], 10, 64)
-		results[i].WriteTicks, _ = strconv.ParseUint(fields[10], 10, 64)
-		results[i].InFlight, _ = strconv.ParseUint(fields[11], 10, 64)
-		results[i].IOTicks, _ = strconv.ParseUint(fields[12], 10, 64)
-		results[i].TimeInQueue, _ = strconv.ParseUint(fields[13], 10, 64)
+		results[i].ReadIOs = ParseUint64(fields[3])
+		results[i].ReadMerges = ParseUint64(fields[4])
+		results[i].ReadSectors = ParseUint64(fields[5])
+		results[i].ReadTicks = ParseUint64(fields[6])
+		results[i].WriteIOs = ParseUint64(fields[7])
+		results[i].WriteMerges = ParseUint64(fields[8])
+		results[i].WriteSectors = ParseUint64(fields[9])
+		results[i].WriteTicks = ParseUint64(fields[10])
+		results[i].InFlight = ParseUint64(fields[11])
+		results[i].IOTicks = ParseUint64(fields[12])
+		results[i].TimeInQueue = ParseUint64(fields[13])
 	}
 
 	return results, nil

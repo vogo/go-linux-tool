@@ -39,7 +39,7 @@ Full documentation is available at [Godoc](https://godoc.org/github.com/vogo/go-
 Reference
 ------------
 
-* http://www.mjmwired.net/kernel/Documentation/filesystems/proc.txt
+* https://www.kernel.org/doc/Documentation/filesystems/proc.txt
 
 License
 -------

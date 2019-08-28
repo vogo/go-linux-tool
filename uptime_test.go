@@ -12,7 +12,7 @@ func TestUptime(t *testing.T) {
 		t.Fatal("uptime total read fail")
 	}
 	if uptime.Idle == 0 {
-		t.Fatal("uptime idel read fail")
+		t.Fatal("uptime idle read fail")
 	}
 
 	t.Logf("Total: %+v", uptime.GetTotalDuration())
